@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
-// ─── Keys loaded from .env (never hardcode secrets) ───────────
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON;
 const GROQ_KEY      = import.meta.env.VITE_GROQ_KEY;
 
-// ── Supabase REST client ──────────────────────────────────
 const sb = {
   async req(method, path, body = null) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
@@ -26,7 +24,6 @@ const sb = {
   update: (t, q, d)    => sb.req("PATCH", `${t}?${q}`, d),
 };
 
-// ── CSS ───────────────────────────────────────────────────
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Raleway:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -40,8 +37,6 @@ const CSS = `
 html,body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:hidden;min-height:100vh}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:var(--g);border-radius:3px}
-
-/* AUTH */
 .aw{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:24px 16px;
   background:radial-gradient(ellipse at 20% 70%,rgba(45,106,79,.22) 0%,transparent 52%),
@@ -77,6 +72,7 @@ html,body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:h
 .irow input::placeholder{color:var(--td)}
 .irow input:focus{border-color:var(--gb);box-shadow:0 0 0 3px rgba(82,183,136,.1)}
 .irow .ico{position:absolute;right:13px;bottom:13px;color:var(--tm);font-size:.88rem;pointer-events:none}
+.irow .eye{position:absolute;right:13px;bottom:13px;color:var(--tm);font-size:.88rem;cursor:pointer;background:none;border:none;padding:0}
 .aerr{display:flex;align-items:center;gap:7px;background:rgba(192,57,43,.12);
   border:1px solid rgba(192,57,43,.28);border-radius:8px;padding:9px 12px;
   font-size:.74rem;color:#f1948a;margin-bottom:13px}
@@ -90,8 +86,8 @@ html,body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:h
 .abtn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .afooter{margin-top:14px;text-align:center;font-size:.72rem;color:var(--tm)}
 .afooter button{background:none;border:none;color:var(--gb);font-weight:700;cursor:pointer;font-family:var(--fb);font-size:.72rem}
-
-/* DASHBOARD */
+.forgot-link{display:block;text-align:right;margin-top:-8px;margin-bottom:12px;font-size:.68rem;color:var(--gb);cursor:pointer;background:none;border:none;font-family:var(--fb)}
+.forgot-link:hover{text-decoration:underline}
 .dash{display:flex;flex-direction:column;min-height:100vh}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:54px;
   background:var(--bg2);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:300}
@@ -275,36 +271,37 @@ html,body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:h
 @media(min-width:769px){.mobnav{display:none}}
 `;
 
-// ── HELPERS ───────────────────────────────────────────────
 const wIcon = c => { if(c===0)return'☀️';if(c<=2)return'⛅';if(c<=3)return'☁️';if(c<=48)return'🌫️';if(c<=57)return'🌦️';if(c<=67)return'🌧️';if(c<=77)return'❄️';if(c<=82)return'🌦️';if(c<=86)return'🌨️';return'⛈️'; };
 const wDesc = c => { if(c===0)return'Clear sky';if(c<=2)return'Partly cloudy';if(c<=3)return'Overcast';if(c<=48)return'Foggy';if(c<=57)return'Drizzle';if(c<=67)return'Rain';if(c<=77)return'Snow';if(c<=82)return'Rain showers';if(c<=86)return'Snow showers';return'Thunderstorm'; };
 const CROPS = [
-  {name:'Maize',      icon:'🌽',rMin:500, rMax:800, tMin:18,tMax:32,soil:'Well-drained loamy',   season:'3–4 months',npk:'120:60:40 kg/ha', spacing:'75×25cm', yld:'4–8 t/ha'},
-  {name:'Rice',       icon:'🌾',rMin:1000,rMax:2000,tMin:20,tMax:35,soil:'Clay/loamy waterlogged',season:'3–6 months',npk:'80:40:40 kg/ha',  spacing:'20×20cm', yld:'3–6 t/ha'},
-  {name:'Wheat',      icon:'🌿',rMin:300, rMax:600, tMin:10,tMax:24,soil:'Clay loam',            season:'4–5 months',npk:'100:50:50 kg/ha', spacing:'20cm rows',yld:'2–4 t/ha'},
-  {name:'Soybean',    icon:'🫘',rMin:450, rMax:700, tMin:20,tMax:30,soil:'Well-drained loamy',   season:'3–5 months',npk:'20:60:40 kg/ha',  spacing:'60×5cm',  yld:'1.5–3 t/ha'},
-  {name:'Tomato',     icon:'🍅',rMin:400, rMax:600, tMin:18,tMax:29,soil:'Sandy loam',           season:'2–3 months',npk:'100:80:80 kg/ha', spacing:'60×45cm', yld:'20–60 t/ha'},
-  {name:'Cassava',    icon:'🥔',rMin:500, rMax:1500,tMin:25,tMax:35,soil:'Sandy loam',           season:'9–24 months',npk:'60:30:90 kg/ha', spacing:'1×1m',    yld:'10–30 t/ha'},
-  {name:'Banana',     icon:'🍌',rMin:1200,rMax:2200,tMin:22,tMax:35,soil:'Deep rich loam',       season:'9–12 months',npk:'200:30:300 kg/ha',spacing:'3×3m',   yld:'20–40 t/ha'},
-  {name:'Groundnut',  icon:'🥜',rMin:400, rMax:700, tMin:24,tMax:33,soil:'Sandy loam',           season:'3–5 months',npk:'20:40:40 kg/ha',  spacing:'45×15cm', yld:'1–2.5 t/ha'},
-  {name:'Sorghum',    icon:'🌾',rMin:250, rMax:600, tMin:22,tMax:34,soil:'Drought-tolerant',     season:'3–4 months',npk:'80:40:40 kg/ha',  spacing:'75×20cm', yld:'2–5 t/ha'},
-  {name:'Sweet Potato',icon:'🍠',rMin:500,rMax:800, tMin:21,tMax:30,soil:'Sandy loam',           season:'3–5 months',npk:'40:60:80 kg/ha',  spacing:'30×30cm', yld:'10–30 t/ha'},
-  {name:'Cabbage',    icon:'🥦',rMin:380, rMax:500, tMin:15,tMax:25,soil:'Fertile loam',         season:'2–3 months',npk:'120:80:60 kg/ha', spacing:'60×45cm', yld:'20–40 t/ha'},
-  {name:'Mango',      icon:'🥭',rMin:900, rMax:1500,tMin:24,tMax:37,soil:'Deep alluvial',        season:'5–6 yrs',   npk:'100:50:100/tree', spacing:'10×10m',  yld:'20–40 kg/tree'},
+  {name:'Maize',icon:'🌽',rMin:500,rMax:800,tMin:18,tMax:32,soil:'Well-drained loamy',season:'3–4 months',npk:'120:60:40 kg/ha',spacing:'75×25cm',yld:'4–8 t/ha'},
+  {name:'Rice',icon:'🌾',rMin:1000,rMax:2000,tMin:20,tMax:35,soil:'Clay/loamy waterlogged',season:'3–6 months',npk:'80:40:40 kg/ha',spacing:'20×20cm',yld:'3–6 t/ha'},
+  {name:'Wheat',icon:'🌿',rMin:300,rMax:600,tMin:10,tMax:24,soil:'Clay loam',season:'4–5 months',npk:'100:50:50 kg/ha',spacing:'20cm rows',yld:'2–4 t/ha'},
+  {name:'Soybean',icon:'🫘',rMin:450,rMax:700,tMin:20,tMax:30,soil:'Well-drained loamy',season:'3–5 months',npk:'20:60:40 kg/ha',spacing:'60×5cm',yld:'1.5–3 t/ha'},
+  {name:'Tomato',icon:'🍅',rMin:400,rMax:600,tMin:18,tMax:29,soil:'Sandy loam',season:'2–3 months',npk:'100:80:80 kg/ha',spacing:'60×45cm',yld:'20–60 t/ha'},
+  {name:'Cassava',icon:'🥔',rMin:500,rMax:1500,tMin:25,tMax:35,soil:'Sandy loam',season:'9–24 months',npk:'60:30:90 kg/ha',spacing:'1×1m',yld:'10–30 t/ha'},
+  {name:'Banana',icon:'🍌',rMin:1200,rMax:2200,tMin:22,tMax:35,soil:'Deep rich loam',season:'9–12 months',npk:'200:30:300 kg/ha',spacing:'3×3m',yld:'20–40 t/ha'},
+  {name:'Groundnut',icon:'🥜',rMin:400,rMax:700,tMin:24,tMax:33,soil:'Sandy loam',season:'3–5 months',npk:'20:40:40 kg/ha',spacing:'45×15cm',yld:'1–2.5 t/ha'},
+  {name:'Sorghum',icon:'🌾',rMin:250,rMax:600,tMin:22,tMax:34,soil:'Drought-tolerant',season:'3–4 months',npk:'80:40:40 kg/ha',spacing:'75×20cm',yld:'2–5 t/ha'},
+  {name:'Sweet Potato',icon:'🍠',rMin:500,rMax:800,tMin:21,tMax:30,soil:'Sandy loam',season:'3–5 months',npk:'40:60:80 kg/ha',spacing:'30×30cm',yld:'10–30 t/ha'},
+  {name:'Cabbage',icon:'🥦',rMin:380,rMax:500,tMin:15,tMax:25,soil:'Fertile loam',season:'2–3 months',npk:'120:80:60 kg/ha',spacing:'60×45cm',yld:'20–40 t/ha'},
+  {name:'Mango',icon:'🥭',rMin:900,rMax:1500,tMin:24,tMax:37,soil:'Deep alluvial',season:'5–6 yrs',npk:'100:50:100/tree',spacing:'10×10m',yld:'20–40 kg/tree'},
 ];
 const cropScore = (c,rain,temp) => { const r=rain>=c.rMin&&rain<=c.rMax?100:rain<c.rMin?Math.max(0,100-(c.rMin-rain)/5):Math.max(0,100-(rain-c.rMax)/10);const t=temp>=c.tMin&&temp<=c.tMax?100:temp<c.tMin?Math.max(0,100-(c.tMin-temp)*10):Math.max(0,100-(temp-c.tMax)*10);return Math.round(r*0.6+t*0.4); };
 const rainAlert = (wx) => { if(!wx)return null;const rain=wx.daily.precipitation_sum;const today=rain[0],next7=rain.slice(0,7).reduce((a,b)=>a+b,0);const nrd=rain.findIndex(r=>r>1);const rd=rain.filter(r=>r>0.5).length;if(today>5)return{type:'rain',icon:'🌧️',title:'Rain Today — Protect Your Crops',body:`<strong>${today.toFixed(1)}mm</strong> falling today. 7-day total: <strong>${next7.toFixed(0)}mm</strong> across <strong>${rd} rainy days</strong>.`,tip:'Avoid harvesting. Clear drainage channels. Hold off fertilizer.'};if(nrd===-1)return{type:'dry',icon:'☀️',title:'Dry Spell — No Rain in 14 Days',body:`Only <strong>${next7.toFixed(0)}mm</strong> over next 7 days.`,tip:'Irrigate moisture-sensitive crops. Mulch soil. Consider drought-tolerant crops.'};if(nrd<=2)return{type:'good',icon:'🌱',title:`Rain in ${nrd===0?'Hours':nrd+' Days'} — Prepare to Plant!`,body:`<strong>${rain[nrd].toFixed(1)}mm</strong> expected ${nrd===0?'today':nrd===1?'tomorrow':`in ${nrd} days`}. 7-day total: <strong>${next7.toFixed(0)}mm</strong>.`,tip:'Excellent planting window. Prepare seedbeds now.'};return{type:'good',icon:'🌤️',title:`Next Rain in ${nrd} Days`,body:`<strong>${rain[nrd].toFixed(1)}mm</strong> in ${nrd} days. 7-day total: <strong>${next7.toFixed(0)}mm</strong>.`,tip:'Good time for land prep. Check irrigation for crops in critical stages.'}; };
 const reverseGeo = async (lat,lon) => { try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);const d=await r.json();const a=d.address;return[a.village||a.town||a.city||a.county,a.state,a.country].filter(Boolean).join(', ');}catch{return`${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;} };
 const toBase64 = (file) => new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});
 
-// ── MAIN APP ──────────────────────────────────────────────
 export default function AgroSense() {
   useEffect(()=>{if(!document.getElementById('agro-css')){const s=document.createElement('style');s.id='agro-css';s.textContent=CSS;document.head.appendChild(s);}},[]);
   const [screen,setScreen]     = useState('auth');
   const [mode,setMode]         = useState('login');
-  const [form,setForm]         = useState({name:'',email:'',password:'',phone:''});
+  const [form,setForm]         = useState({name:'',email:'',password:'',phone:'',newPassword:''});
   const [err,setErr]           = useState('');
+  const [ok,setOk]             = useState('');
   const [authLoad,setAuthLoad] = useState(false);
+  const [showPass,setShowPass] = useState(false);
+  const [showNewPass,setShowNewPass] = useState(false);
   const [me,setMe]             = useState(()=>JSON.parse(localStorage.getItem('agro_me')||'null'));
   const [tab,setTab]           = useState('overview');
   const [loc,setLoc]           = useState(null);
@@ -330,31 +327,33 @@ export default function AgroSense() {
   useEffect(()=>()=>{if(streamRef.current)streamRef.current.getTracks().forEach(t=>t.stop());},[]);
 
   const upd = v => setForm(p=>({...p,...v}));
-  const sw  = m => {setMode(m);setErr('');setForm({name:'',email:'',password:'',phone:''});};
+  const sw  = m => {setMode(m);setErr('');setOk('');setForm({name:'',email:'',password:'',phone:'',newPassword:''});setShowPass(false);setShowNewPass(false);};
 
   const doAuth = async () => {
-    setErr(''); setAuthLoad(true);
+    setErr('');setOk('');setAuthLoad(true);
     try {
       if(mode==='register'){
         if(!form.name||!form.email||!form.password){setErr('All fields required.');setAuthLoad(false);return;}
         const ex=await sb.select('farmers',`email=eq.${encodeURIComponent(form.email)}&select=id`);
         if(ex?.length>0){setErr('Email already registered.');setAuthLoad(false);return;}
-        const rows=await sb.insert('farmers',{name:form.name,email:form.email,phone:form.phone||null,created_at:new Date().toISOString(),last_login:new Date().toISOString()});
-        const u={...rows[0],password:form.password};
-        const creds=JSON.parse(localStorage.getItem('agro_c')||'[]');
-        localStorage.setItem('agro_c',JSON.stringify([...creds,{email:form.email,password:form.password,id:rows[0].id}]));
+        const rows=await sb.insert('farmers',{name:form.name,email:form.email,phone:form.phone||null,password:form.password,created_at:new Date().toISOString(),last_login:new Date().toISOString()});
+        const u=rows[0];
         localStorage.setItem('agro_me',JSON.stringify(u));
         setMe(u);setScreen('dash');
-      } else {
-        const creds=JSON.parse(localStorage.getItem('agro_c')||'[]');
-        const cred=creds.find(c=>c.email===form.email&&c.password===form.password);
-        if(!cred){setErr('Invalid email or password.');setAuthLoad(false);return;}
-        const rows=await sb.select('farmers',`id=eq.${cred.id}&select=*`);
-        if(!rows?.length){setErr('Account not found.');setAuthLoad(false);return;}
-        await sb.update('farmers',`id=eq.${cred.id}`,{last_login:new Date().toISOString()});
-        const u={...rows[0],password:form.password};
-        localStorage.setItem('agro_me',JSON.stringify(u));
-        setMe(u);setScreen('dash');
+      } else if(mode==='login'){
+        const rows=await sb.select('farmers',`email=eq.${encodeURIComponent(form.email)}&password=eq.${encodeURIComponent(form.password)}&select=*`);
+        if(!rows?.length){setErr('Invalid email or password.');setAuthLoad(false);return;}
+        await sb.update('farmers',`id=eq.${rows[0].id}`,{last_login:new Date().toISOString()});
+        localStorage.setItem('agro_me',JSON.stringify(rows[0]));
+        setMe(rows[0]);setScreen('dash');
+      } else if(mode==='forgot'){
+        if(!form.email){setErr('Enter your email.');setAuthLoad(false);return;}
+        const rows=await sb.select('farmers',`email=eq.${encodeURIComponent(form.email)}&select=id`);
+        if(!rows?.length){setErr('No account found with that email.');setAuthLoad(false);return;}
+        if(!form.newPassword){setErr('Enter a new password.');setAuthLoad(false);return;}
+        await sb.update('farmers',`id=eq.${rows[0].id}`,{password:form.newPassword});
+        setOk('Password updated! You can now log in.');
+        setTimeout(()=>sw('login'),2000);
       }
     } catch(e){setErr(`Error: ${e.message}`);}
     setAuthLoad(false);
@@ -411,7 +410,7 @@ export default function AgroSense() {
   };
 
   const clearScan=()=>{setScanImg(null);setScanPrev(null);setScanRes(null);};
-  const loadFarmers=async()=>{setFarmLoad(true);try{setFarmers(await sb.select('farmers','select=*&order=created_at.desc')||[]);}catch(e){console.error(e);}setFarmLoad(false);};
+  const loadFarmers=async()=>{setFarmLoad(true);try{setFarmers(await sb.select('farmers','select=id,name,email,phone,location_name,created_at,last_login&order=created_at.desc')||[]);}catch(e){console.error(e);}setFarmLoad(false);};
 
   const rain14  = wx?wx.daily.precipitation_sum.reduce((a,b)=>a+b,0):0;
   const rainEst = Math.round(rain14/14*365);
@@ -434,15 +433,30 @@ export default function AgroSense() {
       <div className="brand"><span className="brand-leaf">🌿</span><div className="brand-name">AGROSENSE</div><div className="brand-sub">Intelligent Farm Intelligence System</div></div>
       <div className="acard">
         <div className="abar"/>
-        <div className="atabs"><button className={`atab ${mode==='login'?'on':''}`} onClick={()=>sw('login')}>LOGIN</button><button className={`atab ${mode==='register'?'on':''}`} onClick={()=>sw('register')}>REGISTER</button></div>
+        <div className="atabs">
+          <button className={`atab ${mode==='login'?'on':''}`} onClick={()=>sw('login')}>LOGIN</button>
+          <button className={`atab ${mode==='register'?'on':''}`} onClick={()=>sw('register')}>REGISTER</button>
+        </div>
         <div className="abody">
-          <div className="awelcome"><div className="wico">{mode==='login'?'👋':'🌱'}</div><h3>{mode==='login'?'Welcome Back!':'Join AgroSense'}</h3><p>{mode==='login'?'Login to access live weather, crop recommendations, and AI disease scanning.':'Register to get AI-powered crop guidance, real-time weather, and disease detection for your farm.'}</p></div>
+          <div className="awelcome">
+            <div className="wico">{mode==='forgot'?'🔑':mode==='login'?'👋':'🌱'}</div>
+            <h3>{mode==='forgot'?'Reset Password':mode==='login'?'Welcome Back!':'Join AgroSense'}</h3>
+            <p>{mode==='forgot'?'Enter your email and choose a new password.':mode==='login'?'Login to access live weather, crop recommendations, and AI disease scanning.':'Register to get AI-powered crop guidance, real-time weather, and disease detection for your farm.'}</p>
+          </div>
           {err&&<div className="aerr">⚠️ {err}</div>}
-          {mode==='register'&&<><div className="irow"><label>Full Name</label><input type="text" placeholder="e.g. John Banda" value={form.name} onChange={e=>upd({name:e.target.value})}/><span className="ico">👤</span></div><div className="irow"><label>Phone (optional)</label><input type="tel" placeholder="+265 999 000 000" value={form.phone} onChange={e=>upd({phone:e.target.value})}/><span className="ico">📱</span></div></>}
+          {ok&&<div className="aok">✅ {ok}</div>}
+          {mode==='register'&&<>
+            <div className="irow"><label>Full Name</label><input type="text" placeholder="e.g. John Banda" value={form.name} onChange={e=>upd({name:e.target.value})}/><span className="ico">👤</span></div>
+            <div className="irow"><label>Phone (optional)</label><input type="tel" placeholder="+254 999 000 000" value={form.phone} onChange={e=>upd({phone:e.target.value})}/><span className="ico">📱</span></div>
+          </>}
           <div className="irow"><label>Email Address</label><input type="email" placeholder="you@example.com" value={form.email} onChange={e=>upd({email:e.target.value})} onKeyDown={e=>e.key==='Enter'&&doAuth()}/><span className="ico">✉️</span></div>
-          <div className="irow"><label>Password</label><input type="password" placeholder="••••••••" value={form.password} onChange={e=>upd({password:e.target.value})} onKeyDown={e=>e.key==='Enter'&&doAuth()}/><span className="ico">🔒</span></div>
-          <button className="abtn" onClick={doAuth} disabled={authLoad}>{authLoad?'⏳ Please wait...':(mode==='login'?'LOGIN TO DASHBOARD':'CREATE MY ACCOUNT')}</button>
-          <p className="afooter">{mode==='login'?<><span>No account? </span><button onClick={()=>sw('register')}>Sign Up Free</button></>:<><span>Have account? </span><button onClick={()=>sw('login')}>Sign In</button></>}</p>
+          {mode!=='forgot'&&<div className="irow"><label>Password</label><input type={showPass?'text':'password'} placeholder="••••••••" value={form.password} onChange={e=>upd({password:e.target.value})} onKeyDown={e=>e.key==='Enter'&&doAuth()}/><button className="eye" onClick={()=>setShowPass(p=>!p)}>{showPass?'🙈':'👁️'}</button></div>}
+          {mode==='forgot'&&<div className="irow"><label>New Password</label><input type={showNewPass?'text':'password'} placeholder="Enter new password" value={form.newPassword} onChange={e=>upd({newPassword:e.target.value})} onKeyDown={e=>e.key==='Enter'&&doAuth()}/><button className="eye" onClick={()=>setShowNewPass(p=>!p)}>{showNewPass?'🙈':'👁️'}</button></div>}
+          {mode==='login'&&<button className="forgot-link" onClick={()=>sw('forgot')}>Forgot password?</button>}
+          <button className="abtn" onClick={doAuth} disabled={authLoad}>{authLoad?'⏳ Please wait...':(mode==='forgot'?'RESET PASSWORD':mode==='login'?'LOGIN TO DASHBOARD':'CREATE MY ACCOUNT')}</button>
+          {mode==='forgot'&&<p className="afooter"><span>Remember it? </span><button onClick={()=>sw('login')}>Back to Login</button></p>}
+          {mode==='login'&&<p className="afooter"><span>No account? </span><button onClick={()=>sw('register')}>Sign Up Free</button></p>}
+          {mode==='register'&&<p className="afooter"><span>Have account? </span><button onClick={()=>sw('login')}>Sign In</button></p>}
         </div>
       </div>
     </div>
@@ -542,7 +556,6 @@ export default function AgroSense() {
           </>}
         </div>
       </div>
-
       <div className="mobnav"><div className="mobnav-row">{NAV.map(n=><button key={n.id} className={`mni ${tab===n.id?'act':''}`} onClick={()=>setTab(n.id)}><span className="mnic">{n.icon}</span>{n.label}</button>)}</div></div>
     </div>
   );
