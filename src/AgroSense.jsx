@@ -222,9 +222,6 @@ html,body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:h
 .chip{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:8px 11px;
   display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .2s}
 .chip:hover{border-color:var(--bdrs)}
-.farmer-count{display:inline-flex;align-items:center;gap:8px;background:rgba(82,183,136,.1);
-  border:1px solid var(--bdr);border-radius:20px;padding:5px 14px;font-size:.72rem;color:var(--gb);margin-bottom:14px}
-.farmer-count .dot{width:7px;height:7px;background:var(--gb);border-radius:50%;animation:pulse 2s ease infinite}
 .scan-zone{border:2px dashed var(--bdr);border-radius:16px;padding:28px 20px;text-align:center;
   background:rgba(82,183,136,.03);transition:all .25s;position:relative;margin-bottom:14px;cursor:pointer}
 .scan-zone:hover{border-color:var(--gb);background:rgba(82,183,136,.07)}
@@ -267,6 +264,60 @@ html,body{font-family:var(--fb);background:var(--bg);color:var(--t);overflow-x:h
 .cam-close{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);border:none;
   border-radius:50%;width:30px;height:30px;color:white;cursor:pointer;font-size:1rem;
   display:flex;align-items:center;justify-content:center}
+
+/* ── Reviews styles ── */
+.rev-summary{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;
+  background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:18px;margin-bottom:16px}
+.rev-big{font-family:var(--fd);font-size:3rem;color:var(--t);line-height:1;text-align:center}
+.rev-stars-big{font-size:1.4rem;letter-spacing:2px;margin:4px 0}
+.rev-count{font-size:.68rem;color:var(--tm)}
+.rev-bars{display:flex;flex-direction:column;gap:5px}
+.rev-bar-row{display:flex;align-items:center;gap:8px;font-size:.68rem;color:var(--tm)}
+.rev-bar-track{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.rev-bar-fill{height:100%;background:linear-gradient(90deg,var(--g),var(--gb));border-radius:3px;transition:width .5s ease}
+.rev-bar-n{width:18px;text-align:right;color:var(--td);font-size:.62rem}
+.rev-form{background:var(--bg2);border:1px solid var(--bdrs);border-radius:14px;padding:18px;margin-bottom:16px}
+.rev-form h4{font-family:var(--fd);font-size:.84rem;letter-spacing:.07em;color:var(--t);margin-bottom:14px}
+.star-picker{display:flex;gap:6px;margin-bottom:14px}
+.star-pick{font-size:1.6rem;cursor:pointer;transition:transform .15s;line-height:1;background:none;border:none;padding:0}
+.star-pick:hover{transform:scale(1.18)}
+.rev-textarea{width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;
+  padding:11px 14px;color:var(--t);font-family:var(--fb);font-size:.82rem;outline:none;resize:vertical;
+  min-height:88px;transition:border-color .25s}
+.rev-textarea::placeholder{color:var(--td)}
+.rev-textarea:focus{border-color:var(--gb);box-shadow:0 0 0 3px rgba(82,183,136,.1)}
+.rev-category{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.rev-cat-btn{padding:6px 12px;border:1px solid var(--bdr);border-radius:20px;background:var(--bg3);
+  color:var(--tm);font-size:.67rem;cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.rev-cat-btn.sel{background:rgba(82,183,136,.15);border-color:var(--gb);color:var(--gb)}
+.rev-submit{padding:11px 24px;background:linear-gradient(135deg,var(--gl),var(--g));border:none;
+  border-radius:9px;color:white;font-family:var(--fd);font-size:.74rem;letter-spacing:.1em;
+  cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(45,106,79,.3)}
+.rev-submit:hover{transform:translateY(-1px)}
+.rev-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.rev-list{display:flex;flex-direction:column;gap:10px}
+.rev-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:14px;transition:border-color .2s}
+.rev-card:hover{border-color:var(--bdrs)}
+.rev-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.rev-avatar{width:34px;height:34px;background:var(--g);border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.72rem;color:white;font-weight:700;flex-shrink:0}
+.rev-author{font-size:.78rem;color:var(--t);font-weight:600}
+.rev-meta{font-size:.62rem;color:var(--tm);margin-top:2px}
+.rev-stars{font-size:.85rem;letter-spacing:1px}
+.rev-badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:.6rem;font-weight:600;
+  background:rgba(82,183,136,.15);color:var(--gb);border:1px solid rgba(82,183,136,.25);margin-left:6px}
+.rev-text{font-size:.78rem;color:var(--tm);line-height:1.75}
+.rev-helpful{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr)}
+.rev-helpful-btn{background:none;border:1px solid var(--bdr);border-radius:16px;padding:4px 11px;
+  font-size:.66rem;color:var(--tm);cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.rev-helpful-btn:hover{border-color:var(--gb);color:var(--gb)}
+.rev-helpful-btn.liked{border-color:var(--gb);color:var(--gb);background:rgba(82,183,136,.08)}
+.rev-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.rev-filter{padding:5px 12px;border:1px solid var(--bdr);border-radius:16px;background:var(--bg3);
+  color:var(--tm);font-size:.67rem;cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.rev-filter.on{background:rgba(82,183,136,.12);border-color:var(--gb);color:var(--gb)}
+.rev-empty{text-align:center;padding:36px 20px;color:var(--tm);font-size:.78rem;border:1px dashed var(--bdr);border-radius:12px}
+.rev-empty-ico{font-size:2.5rem;margin-bottom:10px}
 @media(max-width:768px){.sidebar{display:none}.mobnav{display:block}}
 @media(min-width:769px){.mobnav{display:none}}
 `;
@@ -292,6 +343,17 @@ const rainAlert = (wx) => { if(!wx)return null;const rain=wx.daily.precipitation
 const reverseGeo = async (lat,lon) => { try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);const d=await r.json();const a=d.address;return[a.village||a.town||a.city||a.county,a.state,a.country].filter(Boolean).join(', ');}catch{return`${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;} };
 const toBase64 = (file) => new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});
 
+const SEED_REVIEWS = [
+  {id:'r1',author:'Grace Wanjiku',initials:'GW',rating:5,category:'Weather Forecast',text:'The rainfall tracker saved my maize crop! I got the alert about the dry spell three days early and irrigated in time. Incredible tool for Kenyan farmers.',date:'2025-04-28',helpful:14,liked:false},
+  {id:'r2',author:'Samuel Odhiambo',initials:'SO',rating:5,category:'AI Report',text:'The AI farm report is spot-on for conditions here in Kisumu. Recommended sorghum and cassava — exactly what our extension officer always says. Trustworthy guidance.',date:'2025-05-01',helpful:9,liked:false},
+  {id:'r3',author:'Fatuma Abubakar',initials:'FA',rating:4,category:'Crop Advisor',text:'Very helpful crop scoring system. I appreciated seeing exactly why tomatoes were rated lower for my region right now. Would love more local variety names.',date:'2025-04-20',helpful:6,liked:false},
+  {id:'r4',author:'John Mutiso',initials:'JM',rating:5,category:'Disease Scanner',text:'Scanned my tomato leaves and it identified early blight immediately. Saved me from losing the whole batch. The treatment steps were clear and worked perfectly.',date:'2025-05-03',helpful:21,liked:false},
+  {id:'r5',author:'Achieng Otieno',initials:'AO',rating:4,category:'General',text:'Simple to use even on a basic smartphone. The offline-friendly design is great for areas with patchy internet. My cooperative is now recommending it to all members.',date:'2025-04-15',helpful:11,liked:false},
+];
+
+const CATEGORIES = ['General','Weather Forecast','Crop Advisor','AI Report','Disease Scanner'];
+const starsStr = n => '★'.repeat(n) + '☆'.repeat(5-n);
+
 export default function AgroSense() {
   useEffect(()=>{if(!document.getElementById('agro-css')){const s=document.createElement('style');s.id='agro-css';s.textContent=CSS;document.head.appendChild(s);}},[]);
   const [screen,setScreen]     = useState('auth');
@@ -310,13 +372,23 @@ export default function AgroSense() {
   const [wxLoad,setWxLoad]     = useState(false);
   const [aiText,setAiText]     = useState('');
   const [aiLoad,setAiLoad]     = useState(false);
-  const [farmers,setFarmers]   = useState([]);
-  const [farmLoad,setFarmLoad] = useState(false);
   const [scanImg,setScanImg]   = useState(null);
   const [scanPrev,setScanPrev] = useState(null);
   const [scanLoad,setScanLoad] = useState(false);
   const [scanRes,setScanRes]   = useState(null);
   const [camOn,setCamOn]       = useState(false);
+
+  // Reviews state
+  const [reviews,setReviews]       = useState(SEED_REVIEWS);
+  const [revRating,setRevRating]   = useState(0);
+  const [revHover,setRevHover]     = useState(0);
+  const [revText,setRevText]       = useState('');
+  const [revCat,setRevCat]         = useState('General');
+  const [revSubmitting,setRevSubmitting] = useState(false);
+  const [revOk,setRevOk]           = useState('');
+  const [revFilter,setRevFilter]   = useState('All');
+  const [revSort,setRevSort]       = useState('newest');
+
   const videoRef = useRef(null);
   const canvasRef= useRef(null);
   const streamRef= useRef(null);
@@ -337,23 +409,19 @@ export default function AgroSense() {
         const ex=await sb.select('farmers',`email=eq.${encodeURIComponent(form.email)}&select=id`);
         if(ex?.length>0){setErr('Email already registered.');setAuthLoad(false);return;}
         const rows=await sb.insert('farmers',{name:form.name,email:form.email,phone:form.phone||null,password:form.password,created_at:new Date().toISOString(),last_login:new Date().toISOString()});
-        const u=rows[0];
-        localStorage.setItem('agro_me',JSON.stringify(u));
-        setMe(u);setScreen('dash');
+        const u=rows[0];localStorage.setItem('agro_me',JSON.stringify(u));setMe(u);setScreen('dash');
       } else if(mode==='login'){
         const rows=await sb.select('farmers',`email=eq.${encodeURIComponent(form.email)}&password=eq.${encodeURIComponent(form.password)}&select=*`);
         if(!rows?.length){setErr('Invalid email or password.');setAuthLoad(false);return;}
         await sb.update('farmers',`id=eq.${rows[0].id}`,{last_login:new Date().toISOString()});
-        localStorage.setItem('agro_me',JSON.stringify(rows[0]));
-        setMe(rows[0]);setScreen('dash');
+        localStorage.setItem('agro_me',JSON.stringify(rows[0]));setMe(rows[0]);setScreen('dash');
       } else if(mode==='forgot'){
         if(!form.email){setErr('Enter your email.');setAuthLoad(false);return;}
         const rows=await sb.select('farmers',`email=eq.${encodeURIComponent(form.email)}&select=id`);
         if(!rows?.length){setErr('No account found with that email.');setAuthLoad(false);return;}
         if(!form.newPassword){setErr('Enter a new password.');setAuthLoad(false);return;}
         await sb.update('farmers',`id=eq.${rows[0].id}`,{password:form.newPassword});
-        setOk('Password updated! You can now log in.');
-        setTimeout(()=>sw('login'),2000);
+        setOk('Password updated! You can now log in.');setTimeout(()=>sw('login'),2000);
       }
     } catch(e){setErr(`Error: ${e.message}`);}
     setAuthLoad(false);
@@ -410,7 +478,47 @@ export default function AgroSense() {
   };
 
   const clearScan=()=>{setScanImg(null);setScanPrev(null);setScanRes(null);};
-  const loadFarmers=async()=>{setFarmLoad(true);try{setFarmers(await sb.select('farmers','select=id,name,email,phone,location_name,created_at,last_login&order=created_at.desc')||[]);}catch(e){console.error(e);}setFarmLoad(false);};
+
+  // Reviews helpers
+  const submitReview = () => {
+    if(!revRating){alert('Please select a star rating.');return;}
+    if(!revText.trim()){alert('Please write a short review.');return;}
+    setRevSubmitting(true);
+    setTimeout(()=>{
+      const newRev = {
+        id:`r${Date.now()}`,
+        author: me?.name || 'Anonymous Farmer',
+        initials: (me?.name||'AF').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(),
+        rating: revRating,
+        category: revCat,
+        text: revText.trim(),
+        date: new Date().toISOString().slice(0,10),
+        helpful: 0,
+        liked: false,
+      };
+      setReviews(p=>[newRev,...p]);
+      setRevRating(0);setRevText('');setRevCat('General');
+      setRevOk('Thanks for your review! 🌱');
+      setTimeout(()=>setRevOk(''),3500);
+      setRevSubmitting(false);
+    },600);
+  };
+
+  const toggleLike = (id) => {
+    setReviews(p=>p.map(r=>r.id===id?{...r,liked:!r.liked,helpful:r.liked?r.helpful-1:r.helpful+1}:r));
+  };
+
+  const avgRating = reviews.length ? (reviews.reduce((a,r)=>a+r.rating,0)/reviews.length) : 0;
+  const barCounts = [5,4,3,2,1].map(s=>({star:s,count:reviews.filter(r=>r.rating===s).length}));
+
+  const filteredReviews = reviews
+    .filter(r => revFilter==='All' || r.category===revFilter)
+    .sort((a,b)=>{
+      if(revSort==='newest') return new Date(b.date)-new Date(a.date);
+      if(revSort==='highest') return b.rating-a.rating;
+      if(revSort==='helpful') return b.helpful-a.helpful;
+      return 0;
+    });
 
   const rain14  = wx?wx.daily.precipitation_sum.reduce((a,b)=>a+b,0):0;
   const rainEst = Math.round(rain14/14*365);
@@ -426,7 +534,7 @@ export default function AgroSense() {
   const stCls   = s=>s==='DISEASED'?'disease':s==='HEALTHY'?'healthy':'unknown';
   const stIco   = s=>s==='DISEASED'?'🦠':s==='HEALTHY'?'✅':'❓';
 
-  const NAV=[{id:'overview',icon:'📊',label:'Overview'},{id:'rain',icon:'🌧️',label:'Rainfall'},{id:'crops',icon:'🌱',label:'Crops'},{id:'scan',icon:'🔬',label:'Scan'},{id:'ai',icon:'🤖',label:'AI Report'},{id:'farmers',icon:'👥',label:'Farmers'}];
+  const NAV=[{id:'overview',icon:'📊',label:'Overview'},{id:'rain',icon:'🌧️',label:'Rainfall'},{id:'crops',icon:'🌱',label:'Crops'},{id:'scan',icon:'🔬',label:'Scan'},{id:'ai',icon:'🤖',label:'AI Report'},{id:'reviews',icon:'⭐',label:'Reviews'}];
 
   if(screen==='auth') return (
     <div className="aw">
@@ -548,11 +656,93 @@ export default function AgroSense() {
             </div>
           </>}
 
-          {tab==='farmers'&&<>
-            <div className="ph"><h2>👥 Registered Farmers</h2><p>Live from Supabase database</p></div>
-            <button className="action-btn" style={{marginTop:0,marginBottom:14}} onClick={loadFarmers} disabled={farmLoad}>{farmLoad?'⏳ Loading...':'🔄 Load All Farmers'}</button>
-            {farmers.length>0&&<><div className="farmer-count"><span className="dot"/><strong>{farmers.length}</strong> farmer{farmers.length!==1?'s':''} registered</div><div className="card" style={{padding:0,overflow:'hidden'}}><div style={{overflowX:'auto'}}><table className="tbl"><thead><tr>{['#','Name','Email','Phone','Location','Registered','Last Login'].map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{farmers.map((f,i)=><tr key={f.id||i}><td>{i+1}</td><td className="hl">{f.name}</td><td>{f.email}</td><td>{f.phone||'–'}</td><td>{f.location_name||'–'}</td><td>{f.created_at?new Date(f.created_at).toLocaleDateString():'-'}</td><td>{f.last_login?new Date(f.last_login).toLocaleDateString():'-'}</td></tr>)}</tbody></table></div></div></>}
-            {farmers.length===0&&!farmLoad&&<div className="banner" style={{textAlign:'left'}}>Click <strong>Load All Farmers</strong> to fetch from Supabase.</div>}
+          {tab==='reviews'&&<>
+            <div className="ph"><h2>⭐ Farmer Reviews</h2><p>Real feedback from the AgroSense community</p></div>
+
+            {/* Summary */}
+            <div className="rev-summary">
+              <div>
+                <div className="rev-big">{avgRating.toFixed(1)}</div>
+                <div className="rev-stars-big" style={{color:'#f5c842'}}>{starsStr(Math.round(avgRating))}</div>
+                <div className="rev-count">{reviews.length} review{reviews.length!==1?'s':''}</div>
+              </div>
+              <div className="rev-bars">
+                {barCounts.map(({star,count})=>(
+                  <div key={star} className="rev-bar-row">
+                    <span style={{width:8,color:'var(--gb)',fontSize:'.7rem'}}>{star}</span>
+                    <span style={{fontSize:'.72rem',color:'#f5c842'}}>★</span>
+                    <div className="rev-bar-track">
+                      <div className="rev-bar-fill" style={{width:reviews.length?`${(count/reviews.length)*100}%`:'0%'}}/>
+                    </div>
+                    <span className="rev-bar-n">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Write a review */}
+            <div className="rev-form">
+              <h4>✍️ Share Your Experience</h4>
+              {revOk&&<div className="aok" style={{marginBottom:12}}>✅ {revOk}</div>}
+              <div style={{fontSize:'.64rem',letterSpacing:'.1em',textTransform:'uppercase',color:'var(--tm)',marginBottom:7}}>Your Rating</div>
+              <div className="star-picker">
+                {[1,2,3,4,5].map(s=>(
+                  <button key={s} className="star-pick"
+                    style={{color: s<=(revHover||revRating)?'#f5c842':'var(--td)',fontSize:'1.7rem'}}
+                    onMouseEnter={()=>setRevHover(s)} onMouseLeave={()=>setRevHover(0)}
+                    onClick={()=>setRevRating(s)}>★</button>
+                ))}
+              </div>
+              <div style={{fontSize:'.64rem',letterSpacing:'.1em',textTransform:'uppercase',color:'var(--tm)',marginBottom:7}}>Category</div>
+              <div className="rev-category">
+                {CATEGORIES.map(c=><button key={c} className={`rev-cat-btn ${revCat===c?'sel':''}`} onClick={()=>setRevCat(c)}>{c}</button>)}
+              </div>
+              <div style={{fontSize:'.64rem',letterSpacing:'.1em',textTransform:'uppercase',color:'var(--tm)',marginBottom:7}}>Your Review</div>
+              <textarea className="rev-textarea" placeholder="How has AgroSense helped your farm? Share your experience…" value={revText} onChange={e=>setRevText(e.target.value)} maxLength={500}/>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:10}}>
+                <span style={{fontSize:'.65rem',color:'var(--td)'}}>{revText.length}/500</span>
+                <button className="rev-submit" onClick={submitReview} disabled={revSubmitting}>{revSubmitting?'⏳ Posting…':'🌱 Post Review'}</button>
+              </div>
+            </div>
+
+            {/* Filter & sort */}
+            <div className="rev-filter-row">
+              <span style={{fontSize:'.67rem',color:'var(--tm)',marginRight:2}}>Filter:</span>
+              {['All',...CATEGORIES].map(f=><button key={f} className={`rev-filter ${revFilter===f?'on':''}`} onClick={()=>setRevFilter(f)}>{f}</button>)}
+              <div style={{marginLeft:'auto',display:'flex',gap:6}}>
+                {[['newest','Newest'],['highest','Top Rated'],['helpful','Most Helpful']].map(([v,l])=>(
+                  <button key={v} className={`rev-filter ${revSort===v?'on':''}`} onClick={()=>setRevSort(v)}>{l}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Review list */}
+            {filteredReviews.length===0&&(
+              <div className="rev-empty"><div className="rev-empty-ico">🌱</div><div>No reviews in this category yet.</div><div style={{marginTop:6,fontSize:'.68rem'}}>Be the first to share your experience!</div></div>
+            )}
+            <div className="rev-list">
+              {filteredReviews.map(r=>(
+                <div key={r.id} className="rev-card">
+                  <div className="rev-card-top">
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <div className="rev-avatar">{r.initials}</div>
+                      <div>
+                        <div className="rev-author">{r.author}<span className="rev-badge">{r.category}</span></div>
+                        <div className="rev-meta">{new Date(r.date).toLocaleDateString([],{year:'numeric',month:'short',day:'numeric'})}</div>
+                      </div>
+                    </div>
+                    <div className="rev-stars" style={{color:'#f5c842',flexShrink:0}}>{starsStr(r.rating)}</div>
+                  </div>
+                  <div className="rev-text">{r.text}</div>
+                  <div className="rev-helpful">
+                    <span style={{fontSize:'.67rem',color:'var(--td)'}}>Helpful?</span>
+                    <button className={`rev-helpful-btn ${r.liked?'liked':''}`} onClick={()=>toggleLike(r.id)}>
+                      👍 {r.helpful}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>}
         </div>
       </div>
